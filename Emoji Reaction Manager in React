@@ -1,0 +1,80 @@
+import React, { useState } from 'react';
+import './style.css';
+
+export default function App() {
+  const [list, setList] = useState([]);
+  const [input, setInput] = useState('');
+  // const [hide, setHide] = useState([]);
+  let emojeeList = ['😂', '😊', '😍', '😅', '💗'];
+
+  function addPostClick() {
+    if(!input.trim())
+     return
+    let date = new Date();
+    let obj = {
+      title: input,
+      id: date,
+      currentEmojee: null,
+      hide: false,
+    };
+    setList([...list, obj]);
+    setInput('');
+  }
+
+  function handleDelete(id) {
+    let newList = list.filter((item) => item.id !== id);
+    setList([...newList]);
+  }
+  function handleAddEmojee(emojee, id) {
+    
+    setList((prevList)=>
+          prevList.map((obj)=>
+           obj.id===id ? {...obj, currentEmojee:emojee } : obj
+          )
+    );
+    toggleHide(id);
+  }
+  function toggleHide(id) {
+    
+    setList((prevList)=>
+       prevList.map((obj)=>
+         obj.id === id ? {...obj,hide:!obj.hide} : obj
+       )
+    );
+
+  }
+
+  console.log(list);
+  return (
+    <div>
+      <h1>Post Emojee</h1>
+      <input
+        value={input}
+        placeholder={'Enter the emojee'}
+        onChange={(e) => setInput(e.target.value)}
+      />
+      <button onClick={() => addPostClick()}>Post</button>
+      {list.map((item, index) => (
+        <div key={item.id}>
+          {item.title}
+          <button onClick={() => handleDelete(item.id)}>Delete</button>
+          <button onClick={() => toggleHide(item.id)}>AddEmojee</button>
+          {item.currentEmojee !== null && (
+            <button onClick={() => toggleHide(item.id)}>
+              {item.currentEmojee}
+            </button>
+          )}
+          {item.hide && (
+            <div>
+              {emojeeList.map((emojee) => (
+                <button onClick={() => handleAddEmojee(emojee, item.id)}>
+                  {emojee}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+  );
+}
