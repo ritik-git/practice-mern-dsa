@@ -1,0 +1,42 @@
+import React, { useState, useRef } from 'react';
+import './style.css';
+
+export default function App() {
+  const [timer, setTimer] = useState(0);
+  const ref = useRef();
+
+  function handleStart() {
+    if (ref.current) return; // already running
+  
+    ref.current = setInterval(() => {
+      setTimer(prev => prev + 1);
+    }, 1000);
+  }
+  
+  function handlePause() {
+    if (ref.current) {
+      clearInterval(ref.current);
+      ref.current = null;
+    }
+  }
+  
+  function handleReset() {
+    if (ref.current) {
+      clearInterval(ref.current);
+      ref.current = null;
+    setTimer(0);}
+  }
+  console.log(ref);
+
+  return (
+    <div>
+      <h1>STOP WATCH</h1>
+      <h1>{timer}</h1>
+      
+
+      {!ref.current &&<button onClick={handleStart}>START</button>}
+      <button onClick={handlePause}>PAUSE</button>
+      <button onClick={handleReset}>RESET</button>
+    </div>
+  );
+}
