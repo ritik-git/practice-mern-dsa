@@ -1,0 +1,55 @@
+import React, { useState, useRef } from 'react';
+
+export default function App() {
+  const [otp, setOtp] = useState(['', '', '', '']);
+  const inputRefs = useRef([]);
+
+  const handleChange = (value, index) => {
+    // 1️⃣ Block non-numbers
+    if (value === '' || !isNaN(value)) {
+      // 2️⃣ Take only last entered digit
+      const digit = value[value.length - 1] || '';
+
+      const newOtp = [...otp];
+      newOtp[index] = digit;
+      setOtp(newOtp);
+
+      // 3️⃣ Move focus forward
+      if (digit && index < otp.length - 1) {
+        inputRefs.current[index + 1].focus();
+      }
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === 'Backspace' && !otp[index] && index > 0) {
+      inputRefs.current[index - 1].focus();
+    }
+  };
+
+  return (
+    <div>
+      <h2>OTP Input</h2>
+
+      <div style={{ display: 'flex', gap: '10px' }}>
+        {otp.map((digit, index) => (
+          <input
+            key={index}
+            ref={(el) => (inputRefs.current[index] = el)}
+            value={digit}
+            onChange={(e) => handleChange(e.target.value, index)}
+            onKeyDown={(e) => handleKeyDown(e, index)}
+            maxLength={1}
+            inputMode="numeric"
+            style={{
+              width: '40px',
+              height: '40px',
+              textAlign: 'center',
+              fontSize: '18px',
+            }}
+          />
+        ))}
+      </div>
+    </div>
+  );
+}
